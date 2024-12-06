@@ -1,0 +1,141 @@
+<div x-data="Recettes()" x-init="init()" class="space-y-6">
+    
+    <div class="w-full flex flex-col md:flex-row items-center mt-4 px-4 pt-2">
+        <label for="searchQuery" class="block font-bold text-sm pr-3 pl-3">Rechercher par titre :</label>
+        <input 
+            id="searchQuery" 
+            type="text" 
+            x-model="searchQuery" 
+            placeholder="Rechercher une recette" 
+            class="text-sm px-2 py-1 border rounded-md w-auto" 
+        />
+    </div>
+    
+   
+    <div class="w-full flex flex-col md:flex-row items-center mt-0 px-4 pt-2">
+        <label for="difficultyFilter" class="block font-bold text-sm pr-3 pl-3">Difficulté :</label>
+        <select id="difficultyFilter" x-model="difficultyFilter" 
+                class="text-sm px-2 py-1 border rounded-md w-auto">
+            <option value="">Toutes</option>
+            <option value="facile">Facile</option>
+            <option value="moyenne">Moyenne</option>
+            <option value="difficile">Difficile</option>
+        </select>
+
+        <label for="prepTimeFilter" class="block font-bold text-sm pr-3 pl-3 ml-4">Préparation :</label>
+        <select id="prepTimeFilter" x-model="prepTimeFilter" class="text-sm px-2 py-1 border rounded-md w-auto">
+            <option value="">Tous les temps</option>
+            <option value="moins_30">Moins de 30 minutes</option>
+            <option value="30_60">30-60 minutes</option>
+            <option value="plus_60">Plus de 60 minutes</option>
+        </select>
+
+        <label for="categoryFilter" class="block font-bold text-sm pr-3 pl-3 ml-0 md:ml-4">Catégorie :</label>
+        <select id="categoryFilter" x-model="categoryFilter" 
+                class="text-sm px-2 py-1 border rounded-md w-auto mb-2 md:mb-0">
+            <option value="">Toutes</option>
+            <option value="accompagnement">Accompagnement</option>
+            <option value="plat">Plat</option>
+            <option value="dessert">Dessert</option>
+        </select>
+        
+        <span class="pl-4 pt-4 text-right text-sm text-gray-500 font-semibold pr-4" x-text="`${filteredRecettes.length} recette(s) trouvée(s)`"></span>
+    </div>
+
+    
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-3 gap-4">
+        <div x-show="filteredRecettes.length === 0" class="col-span-full text-center text-xl text-gray-500">
+            Aucune recette trouvée
+        </div>
+        <template x-for="recette in filteredRecettes" :key="recette.id">
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow" @click="openRecette(recette)">
+                
+                <div class="relative h-full">
+                    <img class="w-full h-56 object-cover filter brightness-75 " :src="recette.imageUrl" :alt="recette.title">
+                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/50 to-transparent text-white p-4">
+                        <h2 class="text-xl font-bold text-orange-300" x-text="recette.title"></h2>
+                        <p class="text-sm mt-1"><strong>Difficulté:</strong> <span x-text="recette.difficulty"></span></p>
+                        <p class="text-sm"><strong>Temps de préparation:</strong> <span x-text="recette.preparationTime"></span> minutes</p>
+                        <p class="text-sm"><strong>Catégorie:</strong> <span x-text="recette.category"></span></p>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>  
+
+   
+    <div x-show="selectedRecette" @click.away="closeRecette" class="fixed inset-0 flex justify-center items-center z-1 " x-transition>
+        <div class="bg-gray-100 rounded-lg shadow-lg p-6 w-11/12 md:w-2/3 lg:w-1/2 relative">
+            
+            <button @click="closeRecette" class="absolute top-1 right-1 text-gray-500 hover:text-black">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+            
+            <img class="w-full h-40 sm:h-48 md:h-64 lg:h-72 object-cover mb-4" :src="selectedRecette.imageUrl" :alt="selectedRecette.title">
+            <h2 class="text-sm font-bold mb-2 md:text-3xl text-orange-500" x-text="selectedRecette.title"></h2>
+
+            <div class="mb-4">
+                <p class="text-sm"><strong class="text-orange-400">Difficulté:</strong> <span x-text="selectedRecette.difficulty" ></span></p>
+                <p class="text-sm"><strong class="text-orange-400">Temps de préparation:</strong> <span x-text="selectedRecette.preparationTime" ></span> minutes</p>
+                <p class="text-sm" ><strong class="text-orange-400">Catégorie:</strong> <span x-text="selectedRecette.category" ></span></p>
+            </div>
+
+           
+            <div class="mb-4">
+                <h3 class="font-semibold text-orange-400 text-sm">Ingrédients :</h3>
+                <ul class="list-inside pl-4 mt-2">
+                    <template x-for="(ingredient, index) in selectedRecette.ingredients" :key="index">
+                        <li class="text-sm mb-2">
+                            <strong><span x-text="ingredient.quantity" ></span></strong>
+                            <strong><span x-text="ingredient.unit" ></span></strong>
+                            <span x-text="ingredient.name"></span>
+                        </li>
+                    </template>
+                </ul>
+            </div>
+
+            
+            <div class="mb-4">
+                <h3 class="font-semibold text-orange-400 pb-2 text-sm">Instructions :</h3>
+                
+               
+                <div class="relative">
+                    <template x-for="(instruction, index) in selectedRecette.instructions" :key="index">
+                        <div x-show="currentStep === index" class="opacity-100 mb-2">
+                            <p class="text-sm">
+                                <span x-text="instruction"></span>
+                            </p>
+                        </div>
+                    </template>
+
+                    <div class="flex justify-between mt-4">
+                        
+                        <button @click="previousStep" :disabled="currentStep === 0" class="bg-orange-500 text-white p-3 rounded-full disabled:opacity-50">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                            </svg>
+                        </button>
+                        
+                       
+                        <button @click="nextStep" :disabled="currentStep === selectedRecette.instructions.length - 1" class="bg-orange-500 text-white p-3 rounded-full disabled:opacity-50">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                     
+                    <div class="w-full bg-gray-200 rounded-full h-2 mb-4 mt-5">
+                        <div 
+                            class="bg-orange-500 h-2 rounded-full" 
+                            :style="'width: ' + ((currentStep + 1) / selectedRecette.instructions.length) * 100 + '%'"
+                        ></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
