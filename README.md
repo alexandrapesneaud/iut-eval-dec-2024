@@ -60,10 +60,11 @@ Un fichier [`recipes.json`](./src/data/recipes.json) contenant 50 recettes sera 
 #### Affichage des recettes
 
 * Vue condensée dans la grille montrant :
-    - Titre
-    - Niveau de difficulté
-    - Temps de préparation
-    - Catégorie
+  - Image
+  - Titre
+  - Niveau de difficulté
+  - Temps de préparation
+  - Catégorie
 * Vue détaillée (modale ou panneau) au clic avec `x-show` et `@click` affichant :
     - Tous les détails de la recette
     - Liste des ingrédients avec template `x-for`
