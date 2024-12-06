@@ -67,14 +67,14 @@
     <div x-show="selectedRecette" @click.away="closeRecette" class="fixed inset-0 flex justify-center items-center z-1 " x-transition>
         <div class="bg-gray-100 rounded-lg shadow-lg p-6 w-11/12 md:w-2/3 lg:w-1/2 relative">
             
-            <button @click="closeRecette" class="absolute top-1 right-1 text-gray-500 hover:text-black">
+            <button @click="closeRecette" class="absolute top-1 right-1 text-gray-500 hover:text-orange-500">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </button>
             
             <img class="w-full h-40 sm:h-48 md:h-64 lg:h-72 object-cover mb-4" :src="selectedRecette.imageUrl" :alt="selectedRecette.title">
-            <h2 class="text-sm font-bold mb-2 md:text-3xl text-orange-500" x-text="selectedRecette.title"></h2>
+            <h2 class=" font-bold mb-2 md:text-3xl text-orange-500" x-text="selectedRecette.title"></h2>
 
             <div class="mb-4">
                 <p class="text-sm"><strong class="text-orange-400">Difficulté:</strong> <span x-text="selectedRecette.difficulty" ></span></p>

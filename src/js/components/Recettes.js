@@ -13,7 +13,7 @@ export default function Recettes() {
        
         init() {
             this.ListeRecettes = recette.recipes;
-            this.favoris = JSON.parse(localStorage.getItem('favoris')) || [];
+          
         },
 
     
